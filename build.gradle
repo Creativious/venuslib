@@ -3,7 +3,14 @@ plugins {
 }
 
 group = 'net.creativious'
-version = '1.0-SNAPSHOT'
+version =  project.version
+if (project.version_type == "DEVELOPMENT") {
+    version = project.version + "-" + "DEV"
+}
+else if (project.version_type == "RELEASE_CANDIDATE") {
+    version = project.version + "-" + "release-candidate"
+}
+
 
 repositories {
     mavenCentral()
