@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'maven-publish'
+    id 'fabric-loom' version '1.3-SNAPSHOT' apply false
 }
 
 group = 'net.creativious'
@@ -11,15 +12,43 @@ if (project.version_type == "DEVELOPMENT") {
 else if (project.version_type == "RELEASE_CANDIDATE") {
     version = project.version + "-" + "release-candidate"
 }
+allprojects {
+    apply plugin: 'java'
+    apply plugin: 'maven-publish'
+    apply plugin: 'fabric-loom'
 
+    repositories {
+        mavenCentral()
+        maven {
+            name = "JitPack"
+            url = "https://jitpack.io"
+        }
+    }
+
+    dependencies {
+        minecraft "com.mojang:minecraft:${project.minecraft_version}"
+        mappings "net.fabricmc:yarn:${project.minecraft_version}+build.${project.yarn_mappings}:v2"
+        modApi "net.fabricmc:fabric-loader:${project.loader_version}"
+        modApi fabricApi.module('fabric-api-base', "${project.fabric_version}")
+        modImplementation fabricApi.module("fabric-networking-api-v1", "${project.fabric_version}")
+        modImplementation fabricApi.module("fabric-lifecycle-events-v1", "${project.fabric_version}")
+        modCompileOnly fabricApi.module("fabric-gametest-api-v1", "${project.fabric_version}")
+    }
+
+    tasks.processResources {
+        inputs.property "version", project.version
+        filesMatching("fabric.mod.json") {
+            expand "version": project.version
+        }
+    }
+}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.9.1')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
+
 }
 
 test {
