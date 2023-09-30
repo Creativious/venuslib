@@ -41,6 +41,24 @@ allprojects {
             expand "version": project.version
         }
     }
+
+}
+
+
+//tasks.test.configure {
+//    dependsOn(tasks.named("runGameTest"))
+//}
+
+subprojects {
+    version = rootProject.version
+
+    sourceSets.create("testmod") {
+        compileClasspath += sourceSets.main.compileClasspath
+        runtimeClasspath += sourceSets.main.runtimeClasspath
+    }
+    dependencies {
+        testImplementation sourceSets.main.output
+    }
 }
 
 repositories {
@@ -48,7 +66,28 @@ repositories {
 }
 
 dependencies {
+    modImplementation(fabricApi.module("fabric-api-base", "${project.fabric_version}"))
+    modImplementation(fabricApi.module("fabric-object-builder-api-v1", "${project.fabric_version}"))
+    modImplementation(fabricApi.module("fabric-rendering-v1", "${project.fabric_version}"))
+    modImplementation(fabricApi.module("fabric-lifecycle-events-v1", "${project.fabric_version}"))
+    modImplementation(fabricApi.module("fabric-item-api-v1", "${project.fabric_version}"))
+    modImplementation(fabricApi.module("fabric-item-group-api-v1", "${project.fabric_version}"))
+    modImplementation(fabricApi.module("fabric-events-interaction-v0", "${project.fabric_version}"))
+    modImplementation(fabricApi.module("fabric-api-lookup-api-v1", "${project.fabric_version}"))
+    modImplementation(fabricApi.module("fabric-command-api-v2", "${project.fabric_version}"))
+    modImplementation(fabricApi.module("fabric-gametest-api-v1", "${project.fabric_version}"))
+    modRuntimeOnly(fabricApi.module("fabric-networking-api-v1", "${project.fabric_version}"))
+    modRuntimeOnly(fabricApi.module("fabric-resource-loader-v0", "${project.fabric_version}"))
+    modRuntimeOnly(fabricApi.module("fabric-events-interaction-v0", "${project.fabric_version}"))
+    modRuntimeOnly(fabricApi.module("fabric-registry-sync-v0", "${project.fabric_version}"))
 
+//    afterEvaluate {
+//        subprojects.forEach {
+//            api "${it.group}:${it.name}:${it.version}"
+////            include "${it.group}:${it.name}"
+////            testModImplementation "$project.group:${it.name}:${project.version}"
+//        }
+//    }
 }
 
 test {
